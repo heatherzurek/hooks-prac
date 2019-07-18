@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 
 import Summary from './Summary';
 
+
 const Character = props => {
   const [loadedCharacter, setLoadedCharacter] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  
+  console.log('is rendering...');
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   console.log('shouldComponentUpdate');
@@ -55,14 +58,22 @@ const Character = props => {
   //   }
   // }
 
-  useEffect(() => {
-    fetchData()
-  }, []);
+  // useEffect(() => {
+  //   fetchData()
+  // }, []);
 
   useEffect(() => {
     fetchData();
+    return () => {
+      console.log('Cleaning up...');
+    };
   }, [props.selectedChar]);
 
+  useEffect(() => {
+    return () => {
+      console.log('Component did unmount');
+    }
+  }, []);
 
   // componentWillUnmount() {
   //   console.log('Too soon...');
@@ -87,4 +98,6 @@ const Character = props => {
     return content;
   }
 
-export default Character;
+export default React.memo(Character, (prevProps, nextProps) => {
+return nextProps.selectedChar === prevProps.selectedChar;
+});
